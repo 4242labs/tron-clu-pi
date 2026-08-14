@@ -141,7 +141,13 @@ export type JournalEntry =
       startedAt: number;
       at: string;
     }
-  | { kind: "seat_exit"; blockId: string; pid: number; at: string }
+  | {
+      kind: "seat_exit";
+      blockId: string;
+      pid: number;
+      usage?: { turns: number; tokens: number; cost: number };
+      at: string;
+    }
   | { kind: "mandate_ended"; reason: "complete" | "aborted" | "stopped"; at: string };
 
 export type BlockState =
@@ -165,6 +171,8 @@ export interface DriverState {
   verdicts: Record<string, ReviewVerdict>;
   evidence: GateEvidence[];
   pendingMerge?: { blockId: string; branch: string };
+  /** What the seats have cost this mandate so far. */
+  spend: { turns: number; tokens: number; cost: number };
   openEscalations: Escalation[];
   liveSeats: { blockId: string; role: string; pid: number; startedAt: number }[];
   ended?: "complete" | "aborted" | "stopped";

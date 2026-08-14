@@ -13,6 +13,7 @@ export const emptyState = (): DriverState => ({
   evidence: [],
   openEscalations: [],
   liveSeats: [],
+  spend: { turns: 0, tokens: 0, cost: 0 },
 });
 
 const bumpAttempt = (state: DriverState, blockId: string, phase: Phase) => {
@@ -82,6 +83,11 @@ export function fold(entries: JournalEntry[]): DriverState {
         break;
       case "seat_exit":
         state.liveSeats = state.liveSeats.filter((s) => s.pid !== e.pid);
+        if (e.usage) {
+          state.spend.turns += e.usage.turns;
+          state.spend.tokens += e.usage.tokens;
+          state.spend.cost += e.usage.cost;
+        }
         break;
       case "mandate_ended":
         state.ended = e.reason;
