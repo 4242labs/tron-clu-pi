@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.1 (2026-08-14)
+
+Nothing in the driver changed. This release exists because npm snapshots the README at
+publish time, and the 0.1.0 page still showed a front door we had already fixed.
+
+### Documentation
+
+* the README opens with a terminal session — install, mandate, build, gates, review, and the
+  run stopping on "awaiting your merge" until an operator types `approve`
+* repo-lifecycle canon: status and maintenance badges, `LICENSING.md`, the contribution
+  licence grant, issue templates
+* no commercial-licence offer — Apache-2.0 already grants what one would sell
+* no "experimental" banner; "pre-v1" plus the specific thing that is unfinished
+
 ## 0.1.0 (2026-08-14)
 
 First release. Experimental: one three-block pilot on a private sandbox, and nothing else.
