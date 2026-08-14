@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 340" width="680" height="340" font-family="'Geist Mono','SF Mono',ui-monospace,Menlo,Consolas,monospace" role="img" aria-label="A terminal session: pi-tron-clu is installed, a mandate of three blocks is started, the first block is built, gated and reviewed by agent seats, and then the run stops and waits for the operator to approve the merge.">
+  <title>@4242labs/pi-tron-clu — it builds and reviews on its own; you merge.</title>
+  <defs>
+    <filter id="pingGlow" x="-20%" y="-80%" width="140%" height="260%">
+      <feGaussianBlur stdDeviation="1.8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="winClip"><rect x="0" y="0" width="680" height="340" rx="22"/></clipPath>
+    <clipPath id="bodyClip"><rect x="1" y="60" width="678" height="262"/></clipPath>
+    <pattern id="scan" width="3" height="3" patternUnits="userSpaceOnUse">
+      <rect width="3" height="1" fill="#ffffff" opacity="0.018"/>
+    </pattern>
+  </defs>
+
+  <g clip-path="url(#winClip)">
+    <rect x="0" y="0" width="680" height="340" fill="#0c0c0d"/>
+    <rect x="0" y="0" width="680" height="45" fill="#1d1d1f"/>
+    <line x1="0" y1="45" x2="680" y2="45" stroke="#000000" stroke-width="1"/>
+    <circle cx="26" cy="23" r="6.5" fill="#ff5f57"/>
+    <circle cx="47" cy="23" r="6.5" fill="#febc2e"/>
+    <circle cx="68" cy="23" r="6.5" fill="#28c840"/>
+    <text x="340" y="27.5" fill="#8a8a8a" font-size="12" text-anchor="middle" letter-spacing="0.3">clu@fleet: ~/kit &#8212; 96&#215;24</text>
+
+    <g clip-path="url(#bodyClip)">
+      <g font-size="12.5">
+        <!-- the feed scrolls once the session outruns the window -->
+        <animateTransform attributeName="transform" type="translate" dur="26s" repeatCount="indefinite"
+          calcMode="discrete" fill="freeze"
+          keyTimes="0;0.446;0.477;0.577;0.615;0.669;0.723;0.777;0.823;1"
+          values="0 0;0 -26;0 -52;0 -78;0 -104;0 -130;0 -156;0 -182;0 -208;0 -208"/>
+
+        <!-- install -->
+        <text x="22" y="78" opacity="0"><tspan fill="#5a5a5e">$</tspan><tspan fill="#c8c8c2"> pi install npm:@4242labs/pi-tron-clu</tspan>
+          <set attributeName="opacity" to="1" begin="0.6s"/></text>
+        <text x="22" y="104" opacity="0"><tspan fill="#6c7c89">Installed npm:@4242labs/pi-tron-clu</tspan>
+          <set attributeName="opacity" to="1" begin="1.5s"/></text>
+
+        <!-- the session -->
+        <text x="22" y="130" opacity="0"><tspan fill="#5a5a5e">$</tspan><tspan fill="#c8c8c2"> cd kit &amp;&amp; pi</tspan>
+          <set attributeName="opacity" to="1" begin="2.3s"/></text>
+        <text x="22" y="156" opacity="0"><tspan fill="#00FFA7">/tron-clu</tspan><tspan fill="#c8c8c2"> ./blocks/mandate.json</tspan>
+          <set attributeName="opacity" to="1" begin="3.2s"/></text>
+        <text x="22" y="182" opacity="0"><tspan fill="#6c7c89">CLU: mandate m3z1 started &#8212; 3 blocks.</tspan>
+          <set attributeName="opacity" to="1" begin="4.1s"/></text>
+
+        <!-- block one, phase by phase -->
+        <text x="22" y="208" opacity="0"><tspan fill="#5a5a5e">·</tspan><tspan fill="#94a2ad"> b1 </tspan><tspan fill="#c8c8c2">build   </tspan><tspan fill="#6c7c89">worker seat spawned &#8212; pid 41208</tspan>
+          <set attributeName="opacity" to="1" begin="5.0s"/></text>
+        <text x="22" y="234" opacity="0"><tspan fill="#5a5a5e">·</tspan><tspan fill="#94a2ad"> b1 </tspan><tspan fill="#c8c8c2">build   </tspan><tspan fill="#6c7c89">passed &#8212; 11 turns, 4 files committed</tspan>
+          <set attributeName="opacity" to="1" begin="6.4s"/></text>
+        <text x="22" y="260" opacity="0"><tspan fill="#5a5a5e">·</tspan><tspan fill="#94a2ad"> b1 </tspan><tspan fill="#c8c8c2">gates   </tspan><tspan fill="#1F9D57">&#10003; npm test &#8212; exit 0</tspan><tspan fill="#5a5a5e">  (detached checkout)</tspan>
+          <set attributeName="opacity" to="1" begin="7.6s"/></text>
+        <text x="22" y="286" opacity="0"><tspan fill="#5a5a5e">·</tspan><tspan fill="#94a2ad"> b1 </tspan><tspan fill="#c8c8c2">review  </tspan><tspan fill="#6c7c89">reviewer seat &#8212; read-only, no edit tools</tspan>
+          <set attributeName="opacity" to="1" begin="8.8s"/></text>
+        <text x="22" y="312" opacity="0"><tspan fill="#5a5a5e">·</tspan><tspan fill="#94a2ad"> b1 </tspan><tspan fill="#c8c8c2">review  </tspan><tspan fill="#1F9D57">APPROVED</tspan><tspan fill="#6c7c89"> &#8212; criteria met, no protected paths touched</tspan>
+          <set attributeName="opacity" to="1" begin="10.2s"/></text>
+
+        <!-- the halt -->
+        <text x="22" y="338" filter="url(#pingGlow)" opacity="0"><tspan fill="#5a5a5e">·</tspan><tspan fill="#94a2ad"> b1 </tspan><tspan fill="#c8c8c2">merge   </tspan><tspan fill="#E0A50E" font-weight="bold">awaiting your merge</tspan>
+          <set attributeName="opacity" to="1" begin="11.6s"/></text>
+        <text x="22" y="364" opacity="0"><tspan fill="#6c7c89">CLU: b1 is reviewed and pushed as clu/m3z1-b1. Nothing merges until you say so.</tspan>
+          <set attributeName="opacity" to="1" begin="12.4s"/></text>
+
+        <!-- the operator, at last -->
+        <text x="22" y="390" opacity="0"><tspan fill="#00FFA7">/tron-clu</tspan><tspan fill="#c8c8c2"> approve b1</tspan>
+          <set attributeName="opacity" to="1" begin="15.0s"/></text>
+        <text x="22" y="416" opacity="0"><tspan fill="#6c7c89">CLU: b1 approved. Landing verified: 882119d is an ancestor of origin/main.</tspan>
+          <set attributeName="opacity" to="1" begin="16.0s"/></text>
+        <text x="22" y="442" opacity="0"><tspan fill="#5a5a5e">·</tspan><tspan fill="#94a2ad"> b2 </tspan><tspan fill="#c8c8c2">build   </tspan><tspan fill="#6c7c89">worker seat spawned &#8212; pid 41307</tspan>
+          <set attributeName="opacity" to="1" begin="17.4s"/></text>
+        <text x="22" y="468" opacity="0"><tspan fill="#5a5a5e">·</tspan><tspan fill="#94a2ad"> b2 </tspan><tspan fill="#c8c8c2">gates   </tspan><tspan fill="#1F9D57">&#10003; npm test &#8212; exit 0</tspan>
+          <set attributeName="opacity" to="1" begin="18.8s"/></text>
+        <text x="22" y="494" filter="url(#pingGlow)" opacity="0"><tspan fill="#5a5a5e">·</tspan><tspan fill="#94a2ad"> b2 </tspan><tspan fill="#c8c8c2">merge   </tspan><tspan fill="#E0A50E" font-weight="bold">awaiting your merge</tspan>
+          <set attributeName="opacity" to="1" begin="20.2s"/></text>
+        <text x="22" y="520" opacity="0"><tspan fill="#5a5a5e">spend: 24 turns · 118,402 tokens · 2 blocks awaiting you</tspan>
+          <set attributeName="opacity" to="1" begin="21.4s"/></text>
+
+        <!-- the cursor, following the line being written -->
+        <rect width="7.5" height="15" rx="1" fill="#c8c8c2" opacity="0.85" x="22" y="67">
+          <animate attributeName="x" dur="26s" repeatCount="indefinite" calcMode="discrete"
+            keyTimes="0;0.023;0.058;0.088;0.123;0.158;0.192;0.246;0.292;0.338;0.392;0.446;0.477;0.577;0.615;0.669;0.723;0.769;0.823;1"
+            values="22;300;22;278;22;120;302;312;278;312;336;302;308;22;120;302;308;278;302;302"/>
+          <animate attributeName="y" dur="26s" repeatCount="indefinite" calcMode="discrete"
+            keyTimes="0;0.023;0.058;0.088;0.123;0.158;0.192;0.246;0.292;0.338;0.392;0.446;0.477;0.577;0.615;0.669;0.723;0.769;0.823;1"
+            values="67;67;93;93;119;145;171;197;223;249;275;301;327;353;379;405;431;457;483;509"/>
+          <animate attributeName="opacity" values="0.85;0.85;0;0;0.85" dur="1.06s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+    </g>
+
+    <rect x="1" y="60" width="678" height="262" fill="url(#scan)"/>
+  </g>
+  <rect x="0.5" y="0.5" width="679" height="339" rx="22" fill="none" stroke="#2e2e2e" stroke-width="1"/>
+</svg>
