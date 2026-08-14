@@ -4,6 +4,10 @@ TRON-CLU for [Pi](https://github.com/earendil-works/pi-mono) — a supervisor ex
 drives a fleet of Pi seats through a build → review → merge pipeline, one block at a time,
 and **stops at every merge to ask you**.
 
+<p align="center">
+  <img src="docs/assets/hero-terminal.svg" alt="A terminal session: a mandate of three blocks is started; the first block is built, gated and reviewed by agent seats; then the run stops and waits for the operator to approve the merge." width="680">
+</p>
+
 > **Status: experimental.** The driver, the seats, the law and the memory adapter are built
 > and tested; one three-block pilot has run end to end on a private sandbox. It has not been
 > used on anything that matters, and should not be yet.
