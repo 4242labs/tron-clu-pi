@@ -1,4 +1,4 @@
-# pi-tron-clu
+# @4242labs/pi-tron-clu
 
 TRON-CLU for [Pi](https://github.com/earendil-works/pi-mono) — a supervisor extension that
 drives a fleet of Pi seats through a build → review → merge pipeline, one block at a time,
@@ -38,7 +38,7 @@ load-bearing (it is you).
 ## Install
 
 ```bash
-pi install npm:pi-tron-clu
+pi install npm:@4242labs/pi-tron-clu
 ```
 
 Then, in a Pi session at the root of a git repository:

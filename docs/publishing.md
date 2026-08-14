@@ -44,10 +44,17 @@ readme, manifest — anything else fails the gate. It runs in CI on every pull r
 is not optional at publish time: a store path, a scratch file, or a `.env` reaching a
 registry is not recoverable by unpublishing.
 
+## The names
+
+Both packages are scoped to **`@4242labs`** — `@4242labs/pi-memento` and
+`@4242labs/pi-tron-clu`. `pi-memento` unscoped was taken by an unrelated package; scoping
+both keeps one namespace for the family rather than leaving half of it to chance
+(operator's call, 2026-08-14, superseding the earlier "unscoped unless taken" ruling).
+
 ## The order
 
-`@4242labs/pi-memento` is published **first**. pi-tron-clu consumes it as a library, and a
-package whose dependency does not exist is a package nobody can install.
+`@4242labs/pi-memento` is published **first**. `@4242labs/pi-tron-clu` consumes it as a
+library, and a package whose dependency does not exist is a package nobody can install.
 
 ## Checklist
 
