@@ -22,3 +22,4 @@ jobs:
       # The suite drives real git repositories; it needs an identity to commit with.
       - run: git config --global user.email "ci@42labs.io" && git config --global user.name "CI"
       - run: npm test
+      - run: npm run pack:check

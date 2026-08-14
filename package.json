@@ -24,6 +24,7 @@
   ],
   "files": [
     "src",
+    "adapters",
     "README.md",
     "LICENSE"
   ],
@@ -42,7 +43,8 @@
     "typecheck": "tsc --noEmit",
     "check": "biome check --vcs-use-ignore-file=false src test package.json tsconfig.json",
     "format": "biome check --write --vcs-use-ignore-file=false src test package.json tsconfig.json",
-    "test": "node --import tsx/esm --test ./test/*.test.ts"
+    "test": "node --import tsx/esm --test ./test/*.test.ts",
+    "pack:check": "node scripts/check-tarball.mjs"
   },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*"
@@ -53,5 +55,11 @@
     "@types/node": "26.2.0",
     "tsx": "4.23.12",
     "typescript": "7.0.2"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
   }
 }
