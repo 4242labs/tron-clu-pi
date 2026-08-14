@@ -1,0 +1,57 @@
+{
+  "name": "tron-clu",
+  "prefix_budget_tokens": 900,
+  "recall_limit": 8,
+  "recall_budget_tokens": 400,
+  "identity_keys": ["id", "topic", "path"],
+
+  "documents": {
+    "operator.md": {
+      "title": "Operator",
+      "sections": ["operator", "practice"]
+    },
+    "project.md": {
+      "title": "This project",
+      "sections": ["project", "gates", "hazards"]
+    }
+  },
+
+  "prefix_sections": [
+    { "name": "operator", "priority": 0, "document": "operator.md" },
+    { "name": "practice", "priority": 1, "document": "operator.md" },
+    { "name": "project", "priority": 2, "document": "project.md" },
+    { "name": "gates", "priority": 3, "document": "project.md" },
+    { "name": "hazards", "priority": 4, "document": "project.md" }
+  ],
+
+  "schema": {
+    "operator.merge_style": { "type": "str", "enum": ["pr", "squash", "merge-commit", "rebase"] },
+    "operator.review_appetite": { "type": "str", "enum": ["low", "medium", "high"] },
+    "project.default_branch": { "type": "str", "pattern": "^[A-Za-z0-9._/-]+$" }
+  },
+
+  "entry_schema": {
+    "topic": { "type": "str", "required": true }
+  },
+
+  "ordered_scales": {
+    "operator.review_appetite": ["low", "medium", "high"]
+  },
+  "ordered_scale_steps": {
+    "operator.review_appetite": 1
+  },
+
+  "collections": {
+    "practice": { "kind": "list", "identity_key": "topic" },
+    "gates": { "kind": "list", "identity_key": "topic" },
+    "hazards": { "kind": "list", "identity_key": "topic" }
+  },
+
+  "required_members": {
+    "practice": ["the-operator-merges"]
+  },
+
+  "retention": { "keep_everything": true },
+
+  "distillation_prompt": "You are consolidating what a supervisor learned running mandates in this project. Keep what will still be true next week: how this operator wants work reviewed and landed, which gates this project actually enforces, and which hazards cost a block last time. Do not keep block ids, branch names, session ids, or anything a `git log` already answers — that is history, not memory. Never record a credential, a token, or a path outside this project."
+}
