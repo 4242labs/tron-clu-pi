@@ -1,3 +1,4 @@
+import { basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import type {
   ExtensionAPI,
@@ -24,6 +25,13 @@ import {
 } from "./lock.ts";
 import { describeOrphans, terminateOrphans } from "./orphans.ts";
 import { piSeatRunner } from "./pi-seats.ts";
+import {
+  loadTelegramConfig,
+  type Relay,
+  relayMessage,
+  silentRelay,
+  telegramRelay,
+} from "./telegram.ts";
 import type { DriverState } from "./types.ts";
 
 export const VERSION = "0.1.0";
@@ -377,6 +385,10 @@ async function startMandate(
       if (described) ctx.ui.notify(described, "warning");
     }
 
+    const telegram = loadTelegramConfig(repo);
+    const relay: Relay = telegram ? telegramRelay(telegram) : silentRelay();
+    ctx.ui.notify(relay.describe(), "info");
+
     const mandateId = state.mandateId ?? "";
     const bootConfig = state.config;
     if (!bootConfig)
@@ -400,7 +412,11 @@ async function startMandate(
         mandateId,
       ),
       signal: rt.abort.signal,
-      notifyOperator: (text) => ctx.ui.notify(text, "info"),
+      notifyOperator: (text) => {
+        ctx.ui.notify(text, "info");
+        // Out only. A park announced on a phone is still resolved at the terminal.
+        void relay.send(relayMessage(basename(repo), text));
+      },
     });
 
     // The handler returns now; the loop runs behind it so the TUI and every subcommand
