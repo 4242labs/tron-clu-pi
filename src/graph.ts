@@ -14,8 +14,16 @@ import {
 } from "./git.ts";
 import type { Host } from "./host.ts";
 import { fold, nextBlock, now } from "./journal.ts";
+import { terminateOrphans } from "./orphans.ts";
 import type { SeatContext, SeatRunner } from "./seats.ts";
-import type { BlockSnapshot, DriverState, Escalation, GateEvidence, Phase } from "./types.ts";
+import {
+  type BlockSnapshot,
+  type DriverState,
+  type Escalation,
+  emptyGrant,
+  type GateEvidence,
+  type Phase,
+} from "./types.ts";
 
 export interface LoopDeps {
   host: Host;
@@ -94,7 +102,12 @@ export class PhaseLoop {
       for (;;) {
         if (this.d.signal.aborted) return this.finish("aborted");
         const state = this.state();
-        if (!state.mandateId || state.ended) return "not-live";
+        if (!state.mandateId) return "not-live";
+        if (state.ended) {
+          // `stop-mandate` ends it from the journal, without another entry to write.
+          this.d.host.setStatus("tron-clu", undefined);
+          return "not-live";
+        }
         if (state.openEscalations.length > 0 || state.pendingMerge) return "parked";
         const block = nextBlock(state);
         if (!block) {
@@ -126,7 +139,13 @@ export class PhaseLoop {
     const config = state.config;
     if (!gates || !config) return "park";
 
-    if (blockFileChanged(block)) {
+    const grant = state.grants[block.id] ?? emptyGrant();
+
+    if (grant.terminateSeats && state.liveSeats.some((s) => s.blockId === block.id)) {
+      await terminateOrphans(this.d.host, state, gates.piBinary);
+    }
+
+    if (blockFileChanged(block) && !grant.ignoreBlockFileEdit) {
       this.park(
         this.escalation(
           block.id,
@@ -146,12 +165,13 @@ export class PhaseLoop {
     if (status === "merging") return (await this.merge(block, state)) ? "continue" : "park";
 
     if (status === "pending" || status === "building" || status === "reviewing") {
-      if (attempts.build >= config.retryCap + 1) {
+      const cap = config.retryCap + 1 + grant.extraBuildAttempts;
+      if (attempts.build >= cap) {
         this.park(
           this.escalation(
             block.id,
             "retry-cap",
-            `build/review retried ${attempts.build} times against a cap of ${config.retryCap}.`,
+            `build/review retried ${attempts.build} times against a cap of ${cap - 1}${grant.extraBuildAttempts > 0 ? " (already raised once by you)" : ""}.`,
             ["retry-raised-cap-once", "abandon", "stop-mandate"],
           ),
         );
@@ -170,7 +190,8 @@ export class PhaseLoop {
     const config = state.config;
     const gates = state.gates;
     if (!config || !gates) return "park";
-    const deadline = Date.now() + config.budgetMinutes * 60_000;
+    const grant = state.grants[block.id] ?? emptyGrant();
+    const deadline = Date.now() + config.budgetMinutes * (1 + grant.budgetExtensions) * 60_000;
     const worktree = blockWorktreePath(this.d.repo, block.id);
 
     this.phase(block.id, "build", "started");

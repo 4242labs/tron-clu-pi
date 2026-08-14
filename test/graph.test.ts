@@ -420,3 +420,162 @@ test("a loop with no mandate does nothing at all", async () => {
     cleanup();
   }
 });
+
+test("a raised cap gives the block exactly one more attempt, then parks again", async () => {
+  const s = await stage(
+    "grant-retry",
+    { work: () => ({ status: "BLOCKED" as const, evidence: "still stuck" }) },
+    {
+      config: { retryCap: 0 },
+    },
+  );
+  try {
+    assert.equal(await s.loop.run(), "parked");
+    const first = fold(s.host.journal()).openEscalations[0];
+    assert.equal(first?.kind, "retry-cap");
+    assert.equal(fold(s.host.journal()).attempts.b1?.build, 1);
+
+    s.host.append({
+      kind: "answer",
+      itemId: first?.itemId ?? "",
+      choice: "retry-raised-cap-once",
+      at: now(),
+    });
+    assert.equal(await s.loop.run(), "parked");
+    const state = fold(s.host.journal());
+    assert.equal(state.attempts.b1?.build, 2, "one more attempt, not unlimited ones");
+    assert.equal(state.openEscalations.length, 1, "and it parks again rather than looping");
+    assert.notEqual(
+      state.openEscalations[0]?.itemId,
+      first?.itemId,
+      "a fresh item — the old one stays answered",
+    );
+  } finally {
+    s.cleanup();
+  }
+});
+
+test("abandon moves the mandate on; stop-mandate ends it", async () => {
+  const s = await stage(
+    "grant-abandon",
+    { work: () => ({ status: "BLOCKED" as const, evidence: "x" }) },
+    {
+      blocks: ["b1", "b2"],
+      config: { retryCap: 0 },
+    },
+  );
+  try {
+    await s.loop.run();
+    const first = fold(s.host.journal()).openEscalations[0];
+    s.host.append({ kind: "answer", itemId: first?.itemId ?? "", choice: "abandon", at: now() });
+
+    assert.equal(await s.loop.run(), "parked", "b2 now runs, fails its own cap, and parks");
+    let state = fold(s.host.journal());
+    assert.equal(state.blockState.b1, "abandoned");
+    assert.equal(state.attempts.b2?.build, 1);
+
+    const second = state.openEscalations[0];
+    s.host.append({
+      kind: "answer",
+      itemId: second?.itemId ?? "",
+      choice: "stop-mandate",
+      at: now(),
+    });
+    assert.equal(await s.loop.run(), "not-live");
+    state = fold(s.host.journal());
+    assert.equal(state.ended, "stopped");
+    assert.equal(
+      state.blockState.b2,
+      "building",
+      "a stopped block is left where it was, not marked failed",
+    );
+  } finally {
+    s.cleanup();
+  }
+});
+
+test("continue-with-snapshot runs the frozen block, not the edited file", async () => {
+  const s = await stage("grant-snapshot", {}, {});
+  const built: string[] = [];
+  const loop = new PhaseLoop({
+    host: s.host,
+    repo: s.repo,
+    seats: stubSeatRunner({
+      work: async (id, attempt, ctx) => {
+        built.push(id);
+        return commitWork(s.host)(id, attempt, ctx);
+      },
+      review: approve,
+    }),
+    signal: s.abort.signal,
+  });
+  try {
+    writeFileSync(
+      join(s.blocksDir, "b1.json"),
+      JSON.stringify({
+        id: "b1",
+        task: "something else entirely",
+        reviewerClass: "code",
+        acceptance: [{ criterion: "x", verify: "true" }],
+      }),
+    );
+    assert.equal(await loop.run(), "parked");
+    const parked = fold(s.host.journal()).openEscalations[0];
+    assert.equal(parked?.kind, "block-file-edited");
+    assert.deepEqual(built, [], "nothing was built while it was parked");
+
+    s.host.append({
+      kind: "answer",
+      itemId: parked?.itemId ?? "",
+      choice: "continue-with-snapshot",
+      at: now(),
+    });
+    assert.equal(await loop.run(), "parked", "it builds and reaches the merge park");
+    const state = fold(s.host.journal());
+    assert.deepEqual(built, ["b1"]);
+    assert.equal(state.pendingMerge?.blockId, "b1");
+    assert.equal(
+      state.blocks[0]?.task,
+      "create b1.txt",
+      "the snapshot ran — the edit never entered state",
+    );
+  } finally {
+    s.cleanup();
+  }
+});
+
+test("extend-once buys the block a second budget", async () => {
+  const s = await stage(
+    "grant-extend",
+    {
+      work: async (id, attempt, ctx) => {
+        if (attempt === 1) await new Promise((r) => setTimeout(r, 1_500));
+        return commitWork(s.host)(id, attempt, ctx);
+      },
+      review: approve,
+    },
+    { config: { budgetMinutes: 0.01, retryCap: 3 } },
+  );
+  try {
+    assert.equal(await s.loop.run(), "parked");
+    const parked = fold(s.host.journal()).openEscalations[0];
+    assert.equal(parked?.kind, "budget-breach");
+
+    s.host.append({
+      kind: "answer",
+      itemId: parked?.itemId ?? "",
+      choice: "extend-once",
+      at: now(),
+    });
+    assert.equal(await s.loop.run(), "parked");
+    const state = fold(s.host.journal());
+    assert.equal(state.grants.b1?.budgetExtensions, 1);
+    assert.equal(
+      state.pendingMerge?.blockId,
+      "b1",
+      "with the extension the block finished and reached the merge",
+    );
+  } finally {
+    s.cleanup();
+  }
+});

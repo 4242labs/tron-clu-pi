@@ -1,4 +1,11 @@
-import type { BlockState, DriverState, JournalEntry, Phase } from "./types.ts";
+import {
+  type BlockState,
+  type DriverState,
+  type Escalation,
+  emptyGrant,
+  type JournalEntry,
+  type Phase,
+} from "./types.ts";
 
 /** The customType every driver entry carries. Custom entries never enter LLM context. */
 export const CLU_ENTRY = "tron-clu";
@@ -14,7 +21,40 @@ export const emptyState = (): DriverState => ({
   openEscalations: [],
   liveSeats: [],
   spend: { turns: 0, tokens: 0, cost: 0 },
+  grants: {},
 });
+
+/**
+ * What an answer does. The choices are the ones the escalation offered — an answer the
+ * escalation did not offer never reaches here, and one that reaches here is applied exactly
+ * once, to one block.
+ */
+const applyAnswer = (state: DriverState, escalation: Escalation, choice: string): void => {
+  const grant = state.grants[escalation.blockId] ?? emptyGrant();
+  state.grants[escalation.blockId] = grant;
+  switch (choice) {
+    case "abandon":
+      state.blockState[escalation.blockId] = "abandoned";
+      break;
+    case "stop-mandate":
+      state.ended = "stopped";
+      break;
+    case "retry-raised-cap-once":
+      grant.extraBuildAttempts += 1;
+      break;
+    case "extend-once":
+      grant.budgetExtensions += 1;
+      break;
+    case "continue-with-snapshot":
+      grant.ignoreBlockFileEdit = true;
+      break;
+    case "terminate-seat":
+      grant.terminateSeats = true;
+      break;
+    // "recheck" and "retry-merge" need no grant: the block is already in `merging`, and
+    // clearing the escalation is enough for the loop to try the landing check again.
+  }
+};
 
 const bumpAttempt = (state: DriverState, blockId: string, phase: Phase) => {
   state.attempts[blockId] ??= { build: 0, review: 0, merge: 0, wrap: 0 };
@@ -32,6 +72,7 @@ const setBlock = (state: DriverState, blockId: string, value: BlockState) => {
  */
 export function fold(entries: JournalEntry[]): DriverState {
   const state = emptyState();
+  const raised = new Map<string, Escalation>();
   for (const e of entries) {
     switch (e.kind) {
       case "mandate_started":
@@ -69,10 +110,14 @@ export function fold(entries: JournalEntry[]): DriverState {
         break;
       case "escalation":
         state.openEscalations.push(e.escalation);
+        raised.set(e.escalation.itemId, e.escalation);
         break;
-      case "answer":
+      case "answer": {
         state.openEscalations = state.openEscalations.filter((x) => x.itemId !== e.itemId);
+        const escalation = raised.get(e.itemId);
+        if (escalation?.answers.includes(e.choice)) applyAnswer(state, escalation, e.choice);
         break;
+      }
       case "seat":
         state.liveSeats.push({
           blockId: e.blockId,
