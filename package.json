@@ -1,0 +1,57 @@
+{
+  "name": "pi-tron-clu",
+  "version": "0.1.0",
+  "description": "TRON-CLU for Pi — a supervisor extension that drives a fleet of Pi seats through a build/review/merge pipeline.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "author": "42labs",
+  "homepage": "https://github.com/4242labs/tron-clu-pi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4242labs/tron-clu-pi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/4242labs/tron-clu-pi/issues"
+  },
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi",
+    "tron",
+    "clu",
+    "orchestration",
+    "multi-agent"
+  ],
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "piExtension": {
+    "lifecycle": "experimental"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "check": "biome check --vcs-use-ignore-file=false src package.json tsconfig.json",
+    "format": "biome check --write --vcs-use-ignore-file=false src package.json tsconfig.json",
+    "test": "node --import tsx/esm --test ./test/*.test.ts"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.8",
+    "@earendil-works/pi-coding-agent": "0.84.1",
+    "@types/node": "26.2.0",
+    "tsx": "4.23.12",
+    "typescript": "7.0.2"
+  }
+}
