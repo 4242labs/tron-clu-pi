@@ -71,13 +71,7 @@ Per package, in order:
 6. Check <https://pi.dev/packages> for the listing: name, description, author, repository
    link, and that the description reads like something a stranger would understand.
 
-## What is blocked, and on whom
+## Release checklist state
 
-| Blocker | Blocks | Needs |
-|:--|:--|:--|
-| npm is not authenticated on this machine (`ENEEDAUTH`) | every publish | an `npm login`, plus an `NPM_TOKEN` repo secret for the release workflow |
-| the `4242labs` npm org does not exist yet | `@4242labs/pi-memento` (the scoped fallback, after `pi-memento` was found taken) | the operator creating the org |
-| both repos are **private** | the gallery's repository link, and `pi install git:…` | the operator's call on when they go public |
-
-None of these are technical unknowns. They are the operator's to decide, and the build has
-been carried as far as it goes without them.
+Both packages are published as of 2026-08-14. Future releases go through the same gates and
+the same order, and should run from CI with `NPM_TOKEN` so the artefact carries provenance.

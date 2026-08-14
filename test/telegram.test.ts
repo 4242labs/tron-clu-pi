@@ -21,10 +21,10 @@ const writeEnv = (root: string, body: string) => {
 test("credentials come from the project's gitignored env file", () => {
   const { path, cleanup } = scratch("tg-env");
   try {
-    writeEnv(path, '# the bot\nTELEGRAM_BOT_TOKEN="123:abc"\nTELEGRAM_CHAT_ID = 8543044763\n\n');
+    writeEnv(path, '# the bot\nTELEGRAM_BOT_TOKEN="123:abc"\nTELEGRAM_CHAT_ID = 100200300\n\n');
     const config = loadTelegramConfig(path, {} as NodeJS.ProcessEnv);
     assert.equal(config?.token, "123:abc");
-    assert.equal(config?.chatId, "8543044763");
+    assert.equal(config?.chatId, "100200300");
     assert.equal(config?.source, ENV_RELATIVE);
   } finally {
     cleanup();
