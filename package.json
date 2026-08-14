@@ -61,5 +61,8 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     }
+  },
+  "dependencies": {
+    "@4242labs/pi-memento": "^0.1.0"
   }
 }

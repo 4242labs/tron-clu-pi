@@ -68,7 +68,6 @@ pi-tron-clu consumes `@4242labs/pi-memento` as a **library** — the same packag
 directly, in the host session's process. Not a subprocess, not a second extension, not a
 copy of the loop.
 
-> **Parked:** the dependency is not declared in `package.json` yet, because
-> `@4242labs/pi-memento` is not on npm yet — publication is waiting on the operator's npm
-> auth. Declaring an unpublishable dependency would break `npm ci` for everyone including
-> CI, so the linkage is documented here and wired at publication.
+Declared in `package.json` as of 2026-08-14, when `@4242labs/pi-memento@0.1.0` was
+published. Until then it was documented and deliberately undeclared: an unpublishable
+dependency breaks `npm ci` for everyone, CI included.
