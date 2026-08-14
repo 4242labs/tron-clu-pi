@@ -1,5 +1,10 @@
 # @4242labs/pi-tron-clu
 
+[![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Maintenance](https://img.shields.io/badge/maintenance-passively--maintained-yellowgreen.svg)](CONTRIBUTING.md)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![npm](https://img.shields.io/npm/v/@4242labs/pi-tron-clu)](https://www.npmjs.com/package/@4242labs/pi-tron-clu)
+
 TRON-CLU for [Pi](https://github.com/earendil-works/pi-mono) — a supervisor extension that
 drives a fleet of Pi seats through a build → review → merge pipeline, one block at a time,
 and **stops at every merge to ask you**.
@@ -8,9 +13,10 @@ and **stops at every merge to ask you**.
   <img src="docs/assets/hero-terminal.svg" alt="A terminal session: a mandate of three blocks is started; the first block is built, gated and reviewed by agent seats; then the run stops and waits for the operator to approve the merge." width="680">
 </p>
 
-> **Status: experimental.** The driver, the seats, the law and the memory adapter are built
-> and tested; one three-block pilot has run end to end on a private sandbox. It has not been
-> used on anything that matters, and should not be yet.
+> **Pre-v1.** The driver, the seats, the law and the memory adapter are built and tested, and
+> one three-block pilot has run end to end on a private sandbox. Seats are not contained yet —
+> see [docs/containerization.md](docs/containerization.md) before pointing it at work you care
+> about.
 
 ## What it does
 

@@ -1,14 +1,19 @@
 # Contributing
 
 > [!IMPORTANT]
-> **Experimental, and moving.** This extension supervises a fleet of coding agents against
-> real repositories. Its interfaces — block schema, journal entries, gate config — are not
-> stable yet, and a change that breaks yours may land without a major version while it says
-> `lifecycle: experimental`.
+> **Pre-v1, and moving.** This extension supervises a fleet of coding agents against real
+> repositories. Its interfaces — block schema, journal entries, gate config — are not stable
+> yet, and a change that breaks yours can land in a minor version.
 
-Issues are welcome, especially ones that show a way a seat could land work without an
-operator's ruling. Pull requests are read, but expect the design questions in
-[docs/law.md](docs/law.md) to be applied to them.
+[Issues](https://github.com/4242labs/tron-clu-pi/issues/new/choose) are welcome, especially
+ones that show a way a seat could land work without an operator's ruling. Pull requests are
+read, but expect the design questions in [docs/law.md](docs/law.md) to be applied to them.
+
+## Licence of contributions
+
+By submitting a pull request you agree that your contribution is licensed under the same
+Apache-2.0 terms as the rest of the project, per section 5 of the licence itself. See
+[LICENSING.md](LICENSING.md).
 
 ## The one rule
 
