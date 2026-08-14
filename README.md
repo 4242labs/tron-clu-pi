@@ -100,4 +100,7 @@ criterion. So is an unknown field — a typo is a reason not to run.
 
 ## License
 
-Apache-2.0 — see [LICENSE](LICENSE).
+Open source — [Apache-2.0](LICENSE). Commercial — contact ahoy@42labs.io.
+
+---
+If it earned its keep, [coffee is appreciated](https://buymeacoffee.com/42piratas). ☕
