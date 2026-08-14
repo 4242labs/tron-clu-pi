@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import type {
   ExtensionAPI,
   ExtensionCommandContext,
@@ -21,7 +22,8 @@ import {
   releaseLock,
   touchLock,
 } from "./lock.ts";
-import { stubSeatRunner } from "./stub-seats.ts";
+import { describeOrphans, terminateOrphans } from "./orphans.ts";
+import { piSeatRunner } from "./pi-seats.ts";
 import type { DriverState } from "./types.ts";
 
 export const VERSION = "0.1.0";
@@ -130,6 +132,10 @@ export default function (pi: ExtensionAPI) {
   });
 }
 
+/** Seats load the deny extension from this package, wherever it was installed from. */
+export const denyExtensionPath = (): string =>
+  fileURLToPath(new URL("./seat-deny.ts", import.meta.url));
+
 const heldLock = async (host: Host) => {
   try {
     return readLock(lockPathFor(await gitCommonDir(host)));
@@ -162,6 +168,13 @@ export function renderStatus(state: DriverState): string[] {
     );
   for (const e of state.openEscalations)
     lines.push(`  parked ${e.itemId}: ${e.kind} — ${e.answers.join(" | ")}`);
+  for (const s of state.liveSeats)
+    lines.push(`  seat running: ${s.role} on ${s.blockId} (pid ${s.pid})`);
+  if (state.spend.turns > 0) {
+    lines.push(
+      `  spent: ${state.spend.turns} turns · ${state.spend.tokens.toLocaleString("en-US")} tokens · $${state.spend.cost.toFixed(2)}`,
+    );
+  }
   return lines;
 }
 
@@ -345,11 +358,37 @@ async function startMandate(
       ctx.ui.notify(`CLU: mandate ${mandateId} started — ${blocks.length} blocks.`, "info");
     }
 
+    // A resume inherits whatever the killed session left running. Two writers on one
+    // worktree is the failure this prevents, so it happens before the loop starts.
+    const state = fold(host.journal());
+    if (state.liveSeats.length > 0) {
+      const report = await terminateOrphans(host, state, gates.piBinary);
+      const described = describeOrphans(report);
+      if (described) ctx.ui.notify(described, "warning");
+    }
+
+    const mandateId = state.mandateId ?? "";
+    const bootConfig = state.config;
+    if (!bootConfig)
+      return void ctx.ui.notify("CLU: no boot config in state — cannot start seats.", "error");
+
     rt.abort = new AbortController();
     rt.loop = new PhaseLoop({
       host,
       repo,
-      seats: stubSeatRunner(),
+      seats: piSeatRunner(
+        {
+          piBinary: gates.piBinary,
+          denyExtension: denyExtensionPath(),
+          config: bootConfig,
+          gates,
+          evidenceFor: (blockId) =>
+            fold(host.journal()).evidence.filter((e) => e.blockId === blockId),
+          onExit: (blockId, _role, pid, usage) =>
+            host.append({ kind: "seat_exit", blockId, pid: pid ?? -1, usage, at: now() }),
+        },
+        mandateId,
+      ),
       signal: rt.abort.signal,
       notifyOperator: (text) => ctx.ui.notify(text, "info"),
     });
