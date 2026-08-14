@@ -33,9 +33,6 @@
       "./src/index.ts"
     ]
   },
-  "piExtension": {
-    "lifecycle": "experimental"
-  },
   "publishConfig": {
     "access": "public"
   },

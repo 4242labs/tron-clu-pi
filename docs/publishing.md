@@ -34,8 +34,7 @@ declares the entry points:
 {
   "keywords": ["pi-package", "pi-extension"],
   "files": ["src", "adapters", "README.md", "LICENSE"],
-  "pi": { "extensions": ["./src/index.ts"] },
-  "piExtension": { "lifecycle": "experimental" }
+  "pi": { "extensions": ["./src/index.ts"] }
 }
 ```
 

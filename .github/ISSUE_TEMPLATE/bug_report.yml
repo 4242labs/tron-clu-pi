@@ -1,0 +1,34 @@
+name: Bug report
+description: Something the supervisor did that it should not have — especially anything that landed work without a ruling.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The most valuable report here is a way a seat reached a merge without an operator.
+        If that is what you have, say so first — everything else can wait.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What the run did, and what you expected instead.
+    validations: { required: true }
+  - type: textarea
+    id: block
+    attributes:
+      label: The block, if it is not private
+      description: The block file the mandate was running. Redact freely.
+      render: json
+  - type: textarea
+    id: journal
+    attributes:
+      label: What the driver recorded
+      description: The relevant lines from `/tron-clu status`, or the phase/evidence entries around the failure.
+      render: text
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: "`pi --version`, this package's version, and your OS."
+      placeholder: "pi 0.84.1 · @4242labs/pi-tron-clu 0.1.0 · macOS 15"
+    validations: { required: true }
