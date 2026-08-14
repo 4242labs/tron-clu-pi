@@ -25,6 +25,7 @@ Run the automated set with `npm test`.
 | **Operator silence** — a parked mandate re-run is a no-op; nothing times out into a decision | automated | `test/graph.test.ts` "an open escalation blocks every further step" |
 | **Block file edited mid-mandate** — parks; the snapshot is what runs, and only if the operator says so | automated | `test/graph.test.ts` "a block file edited mid-mandate parks" |
 | **A seat tries to land work itself** — every direct spelling is denied; what pattern matching cannot catch is measured, not assumed | automated | `test/law.test.ts`, and [law.md](law.md) |
+| **A live seat tries to merge** — a real `pi` seat, told to run `git merge`, is blocked by the extension and told why | run live 2026-08-14 | recorded in [law.md](law.md) |
 | **Telegram unreachable** — the park still lands in the TUI; the relay returns false and nothing else changes | automated | `test/telegram.test.ts` |
 
 ## Manual drills

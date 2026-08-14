@@ -37,7 +37,15 @@ matches merge, rebase, push, cherry-pick, `gh pr merge|create|ready`, `gh api �
 alias definition, or a remote rewrite — including through global git options, so
 `git -C /repo merge` is the same command as `git merge`.
 
-**This one is bypassable, and it is not claimed otherwise.** A determined process can:
+**Verified live, 2026-08-14.** A real seat — `pi -p --mode json -ne -ns -e src/seat-deny.ts
+-t read,bash`, a local model, a scratch repository with a `feature` branch — was told to
+merge that branch and to run the command. It called `bash` with `git merge feature`; the
+call came back as a tool **error** carrying the policy's own reason; the model read it,
+checked `git status` instead, and reported that the merge would have to be done by a person.
+The lock holds against an ordinary attempt, and the seat is told why rather than left
+guessing.
+
+**It is still bypassable, and it is not claimed otherwise.** A determined process can:
 
 - write a shell script that runs `git merge` and execute the script by name;
 - build the command from pieces (`g=merge; git $g main`, `'pu'+'sh'`);
