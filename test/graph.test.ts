@@ -579,3 +579,99 @@ test("extend-once buys the block a second budget", async () => {
     s.cleanup();
   }
 });
+
+test("a rejected review retries with the reviewer's words, then parks at the cap", async () => {
+  const briefs: (string | undefined)[] = [];
+  const s = await stage("reject-to-cap", {}, { config: { retryCap: 1 } });
+  const loop = new PhaseLoop({
+    host: s.host,
+    repo: s.repo,
+    seats: stubSeatRunner({
+      work: async (id, attempt, ctx) => {
+        briefs.push(ctx.feedback);
+        return commitWork(s.host)(id, attempt, ctx);
+      },
+      review: (_id, attempt) => ({
+        verdict: "REJECTED" as const,
+        evidence: `the retry counts wrong (round ${attempt})`,
+      }),
+    }),
+    signal: s.abort.signal,
+  });
+  try {
+    assert.equal(await loop.run(), "parked");
+    const state = fold(s.host.journal());
+    assert.equal(state.attempts.b1?.build, 2);
+    assert.equal(state.openEscalations[0]?.kind, "retry-cap");
+    assert.equal(state.verdicts.b1?.verdict, "REJECTED");
+    assert.equal(briefs[0], undefined, "the first attempt has nothing to answer for");
+    assert.match(
+      briefs[1] ?? "",
+      /the retry counts wrong \(round 1\)/,
+      "the retry is briefed with the rejection",
+    );
+    assert.equal(state.pendingMerge, undefined, "a rejected block never reaches a merge park");
+  } finally {
+    s.cleanup();
+  }
+});
+
+test("an abort mid-build leaves the worktree, and the resume works in it rather than fighting it", async () => {
+  const s = await stage("abort-dirty", {}, {});
+  const abort = new AbortController();
+  const worktree = blockWorktreePath(s.repo, "b1");
+  const first = new PhaseLoop({
+    host: s.host,
+    repo: s.repo,
+    seats: stubSeatRunner({
+      work: async () => {
+        writeFileSync(join(worktree, "half-done.txt"), "uncommitted work\n");
+        abort.abort();
+        throw new Error("the host went away");
+      },
+    }),
+    signal: abort.signal,
+  });
+  try {
+    assert.equal(await first.run(), "aborted");
+    assert.equal(
+      existsSync(join(worktree, "half-done.txt")),
+      true,
+      "an abort does not throw the work away",
+    );
+
+    // The resume: a fresh mandate entry is not written, the journal is simply replayed.
+    s.host.append({ kind: "mandate_started", ...startedFrom(s.host), at: now() } as never);
+    const resumed = new PhaseLoop({
+      host: s.host,
+      repo: s.repo,
+      seats: stubSeatRunner({ work: commitWork(s.host), review: approve }),
+      signal: new AbortController().signal,
+    });
+    assert.equal(await resumed.run(), "parked");
+    const state = fold(s.host.journal());
+    assert.equal(
+      state.pendingMerge?.blockId,
+      "b1",
+      "the block finished in the worktree the abort left behind",
+    );
+
+    const tracked = await s.host.run("git", ["ls-tree", "--name-only", "HEAD"], { cwd: worktree });
+    assert.match(tracked.stdout, /b1\.txt/);
+    assert.equal(
+      existsSync(join(worktree, "half-done.txt")),
+      true,
+      "and the half-done file is still the operator's to deal with",
+    );
+  } finally {
+    s.cleanup();
+  }
+});
+
+/** The entry that re-opens an aborted mandate: same id, same blocks, same config. */
+function startedFrom(host: TestHost) {
+  const first = host.journal().find((e) => e.kind === "mandate_started");
+  if (first?.kind !== "mandate_started") throw new Error("no mandate to resume");
+  const { kind: _kind, at: _at, ...rest } = first;
+  return rest;
+}

@@ -16,7 +16,13 @@ const DEFAULT_PROTECTED = [
   ".pi/**",
 ];
 
-const GITIGNORE_LINES = [".pi/tron-clu.lock", ".pi/tron-clu-work/", ".pi/tron-clu-verify/"];
+const GITIGNORE_LINES = [
+  ".pi/tron-clu.lock",
+  ".pi/tron-clu-work/",
+  ".pi/tron-clu-verify/",
+  // A bot token in a repository is a bot token on the internet.
+  ".pi/tron-clu.env",
+];
 
 export interface InitOptions {
   repo: string;
