@@ -32,8 +32,7 @@ phase waits.
 
 - `npm login` on this machine — currently `ENEEDAUTH`.
 - Create the **`4242labs` npm org** — `@4242labs/pi-memento` cannot publish without it.
-  (`pi-memento` unscoped is taken by an unrelated package; the scoped name was their
-  pre-ruled fallback.)
+  (`pi-memento` unscoped is taken by an unrelated package; both packages are scoped to keep one namespace.)
 - Add `NPM_TOKEN` as a repository secret in both repos, for the release workflow.
 - Decide whether the repos go **public**. The gallery shows a repository link, and
   `pi install git:…` needs one. A private repo means a listing that points at a 404.
@@ -69,7 +68,7 @@ Install each from npm into a scratch project and run the command once:
 ```bash
 mkdir /tmp/listing-check && cd /tmp/listing-check && git init
 pi install npm:@4242labs/pi-memento -l --approve
-pi install npm:pi-tron-clu -l --approve
+pi install npm:@4242labs/pi-tron-clu -l --approve
 pi   # then: /tron-clu status, /memento status
 ```
 
@@ -87,7 +86,7 @@ Then open <https://pi.dev/packages> and read the entries as a stranger would:
 
 The gallery entry is the first thing anyone will see of this project. Current descriptions:
 
-- **pi-tron-clu** — "TRON-CLU for Pi — a supervisor extension that drives a fleet of Pi seats
+- **@4242labs/pi-tron-clu** — "TRON-CLU for Pi — a supervisor extension that drives a fleet of Pi seats
   through a build/review/merge pipeline."
 - **@4242labs/pi-memento** — "MEMENTO for Pi — persistent memory for a Pi session: recall at
   start, journal as you go, consolidate on exit."

@@ -1,5 +1,5 @@
 {
-  "name": "pi-tron-clu",
+  "name": "@4242labs/pi-tron-clu",
   "version": "0.1.0",
   "description": "TRON-CLU for Pi — a supervisor extension that drives a fleet of Pi seats through a build/review/merge pipeline.",
   "type": "module",
