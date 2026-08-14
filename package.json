@@ -40,8 +40,8 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "check": "biome check --vcs-use-ignore-file=false src package.json tsconfig.json",
-    "format": "biome check --write --vcs-use-ignore-file=false src package.json tsconfig.json",
+    "check": "biome check --vcs-use-ignore-file=false src test package.json tsconfig.json",
+    "format": "biome check --write --vcs-use-ignore-file=false src test package.json tsconfig.json",
     "test": "node --import tsx/esm --test ./test/*.test.ts"
   },
   "peerDependencies": {
