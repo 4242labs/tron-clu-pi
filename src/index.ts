@@ -358,6 +358,16 @@ async function startMandate(
       ctx.ui.notify(`CLU: mandate ${mandateId} started — ${blocks.length} blocks.`, "info");
     }
 
+    // Trust decides which extensions Pi discovers, not whether the deny loads: seats get it
+    // through an explicit `-e`, which P0 verified loads without project trust. Said out loud
+    // so an untrusted project is never mistaken for an unprotected one.
+    if (ctx.isProjectTrusted() === false) {
+      ctx.ui.notify(
+        "CLU: this project is not trusted, so Pi discovers no project-local extensions. Seats are unaffected — the deny extension is passed explicitly.",
+        "info",
+      );
+    }
+
     // A resume inherits whatever the killed session left running. Two writers on one
     // worktree is the failure this prevents, so it happens before the loop starts.
     const state = fold(host.journal());

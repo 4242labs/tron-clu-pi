@@ -98,6 +98,26 @@ export type EscalationKind =
   | "block-file-edited"
   | "merge-not-landed";
 
+/**
+ * The effect of an answer. Every field is a limit the operator raised by hand: the driver
+ * has no path to any of them on its own, and each is granted once per answer, never standing.
+ */
+export interface Grant {
+  extraBuildAttempts: number;
+  budgetExtensions: number;
+  /** The block file changed on disk and the operator chose to run the snapshot anyway. */
+  ignoreBlockFileEdit: boolean;
+  /** The operator asked for the seat to be killed after a wall-clock breach. */
+  terminateSeats: boolean;
+}
+
+export const emptyGrant = (): Grant => ({
+  extraBuildAttempts: 0,
+  budgetExtensions: 0,
+  ignoreBlockFileEdit: false,
+  terminateSeats: false,
+});
+
 export interface Escalation {
   itemId: string;
   blockId: string;
@@ -173,6 +193,8 @@ export interface DriverState {
   pendingMerge?: { blockId: string; branch: string };
   /** What the seats have cost this mandate so far. */
   spend: { turns: number; tokens: number; cost: number };
+  /** What the operator's answers granted, per block. Nothing else relaxes a limit. */
+  grants: Record<string, Grant>;
   openEscalations: Escalation[];
   liveSeats: { blockId: string; role: string; pid: number; startedAt: number }[];
   ended?: "complete" | "aborted" | "stopped";
