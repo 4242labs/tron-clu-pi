@@ -548,13 +548,15 @@ test("extend-once buys the block a second budget", async () => {
   const s = await stage(
     "grant-extend",
     {
+      // The first attempt outlives the budget by a wide margin; the second returns at
+      // once. Nothing here races: 5s against a 3s budget, then instant against 6s.
       work: async (id, attempt, ctx) => {
-        if (attempt === 1) await new Promise((r) => setTimeout(r, 1_500));
+        if (attempt === 1) await new Promise((r) => setTimeout(r, 5_000));
         return commitWork(s.host)(id, attempt, ctx);
       },
       review: approve,
     },
-    { config: { budgetMinutes: 0.01, retryCap: 3 } },
+    { config: { budgetMinutes: 0.05, retryCap: 3 } },
   );
   try {
     assert.equal(await s.loop.run(), "parked");
