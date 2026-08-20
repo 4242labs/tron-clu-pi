@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0](https://github.com/4242labs/tron-clu-pi/compare/pi-tron-clu-v0.1.1...pi-tron-clu-v0.2.0) (2026-08-20)
+
+
+### Features
+
+* answers that do something, and the law written down ([#4](https://github.com/4242labs/tron-clu-pi/issues/4)) ([d95e30a](https://github.com/4242labs/tron-clu-pi/commit/d95e30a79fc40f95b06231a1908d5bbb56a8f296))
+* real seats — child `pi` processes, personas, custody, and caps ([#3](https://github.com/4242labs/tron-clu-pi/issues/3)) ([69bf863](https://github.com/4242labs/tron-clu-pi/commit/69bf8632bc55244f4b0265432511140ebf2fea8e))
+* the CLU memory adapter, and a gate on what ships ([#5](https://github.com/4242labs/tron-clu-pi/issues/5)) ([f727fee](https://github.com/4242labs/tron-clu-pi/commit/f727feeacf16dd7fd75a482585022c87d508c910))
+* the line to an operator who is not at the terminal, and the drills ([#6](https://github.com/4242labs/tron-clu-pi/issues/6)) ([74ba3b6](https://github.com/4242labs/tron-clu-pi/commit/74ba3b625c6a9eff21363cefd999210e2bb850c5))
+* the P1 driver — mandate, gates, lock, journal, and a parked merge ([#2](https://github.com/4242labs/tron-clu-pi/issues/2)) ([32fcd03](https://github.com/4242labs/tron-clu-pi/commit/32fcd033024a941a6cf08fadcba4839aa17e061b))
+
 ## 0.1.1 (2026-08-14)
 
 Nothing in the driver changed. This release exists because npm snapshots the README at
