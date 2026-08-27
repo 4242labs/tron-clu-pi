@@ -108,6 +108,11 @@ criterion. So is an unknown field — a typo is a reason not to run.
 - git 2.5+ (worktrees)
 - `gh`, for the `pr` and `squash` merge strategies
 
+## Contributors
+
+<!-- contributors:start -->
+<!-- contributors:end -->
+
 ## License
 
 Open source — [Apache-2.0](LICENSE).
